@@ -1,0 +1,148 @@
+esphome:
+    name: energymanager-power-module
+
+esp32:
+    board: esp32dev
+    framework:
+        type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+    encryption:
+        key: 'xri3aAFvDvLQZJrn2eaKLF0wN+0qKWhRewbFlTk4idY='
+
+ota:
+    password: '8a32efee3faeedf1c68f9781d5cefbd1'
+
+wifi:
+    ssid: !secret wifi_ssid
+    password: !secret wifi_password
+
+    # Enable fallback hotspot (captive portal) in case wifi connection fails
+    ap:
+        ssid: 'Energymanager-Power-Module'
+        password: 'beaQ79PMUgZ0'
+
+captive_portal:
+
+switch:
+    - platform: gpio
+      pin: 4
+      name: 'Relay 1'
+      restore_mode: ALWAYS_ON
+    - platform: gpio
+      pin: 16
+      name: 'Relay 2'
+      restore_mode: ALWAYS_ON
+    - platform: gpio
+      pin: 17
+      name: 'Relay 3'
+      restore_mode: ALWAYS_ON
+    - platform: gpio
+      pin: 18
+      name: 'Relay 4'
+      restore_mode: ALWAYS_ON
+    - platform: gpio
+      pin: 19
+      name: 'Relay 5'
+      restore_mode: ALWAYS_ON
+    - platform: gpio
+      pin: 21
+      name: 'Relay 6'
+      restore_mode: ALWAYS_ON
+    - platform: gpio
+      pin: 22
+      name: 'Relay 7'
+      restore_mode: ALWAYS_ON
+    - platform: gpio
+      pin: 23
+      name: 'Relay 8'
+      restore_mode: ALWAYS_ON
+
+sensor:
+    - platform: adc
+      pin: 34
+      attenuation: 11dB
+      id: adc_sensor_1
+      name: adc_sensor_relay1
+      update_interval: 50ms
+      unit_of_measurement: A
+      filters:
+          - max:
+                window_size: 50
+                send_every: 50
+          - lambda: return (((x*1000)-1650 - 22)/100)*0.707;
+          - offset: -0.1
+
+    - platform: adc
+      pin: 35
+      attenuation: 11dB
+      id: adc_sensor_2
+      name: adc_sensor_relay2
+      update_interval: 50ms
+      unit_of_measurement: A
+      filters:
+          - max:
+                window_size: 50
+                send_every: 50
+          - lambda: return (((x*1000)-1650 - 34)/100)*0.707;
+          - offset: -0.1
+
+    - platform: adc
+      pin: 32
+      attenuation: 11dB
+      id: adc_sensor_3
+      name: adc_sensor_relay3
+      update_interval: 50ms
+      unit_of_measurement: A
+      filters:
+          - max:
+                window_size: 50
+                send_every: 50
+          - lambda: return (((x*1000)-1650 - 22)/100)*0.707;
+          - offset: -0.1
+
+    - platform: adc
+      pin: 33
+      attenuation: 11dB
+      id: adc_sensor_4
+      name: adc_sensor_relay4
+      update_interval: 50ms
+      unit_of_measurement: A
+      filters:
+          - max:
+                window_size: 50
+                send_every: 50
+          - lambda: return (((x*1000)-1650 - 40)/100)*0.707 * 60;
+          - offset: -0.1
+
+    - platform: template
+      id: total_current
+      name: Total Current
+      accuracy_decimals: 2
+      unit_of_measurement: A
+      update_interval: 500ms
+      lambda: return (float) id(adc_sensor_1).state + id(adc_sensor_2).state + id(adc_sensor_3).state + id(adc_sensor_4).state;
+
+    - platform: template
+      id: total_power
+      name: Total Power
+      accuracy_decimals: 0
+      unit_of_measurement: W
+      update_interval: 500ms
+      lambda: return (float) id(total_current).state * 230;
+
+    - platform: total_daily_energy
+      name: Total Daily Energy
+      power_id: total_power
+      filters:
+          - multiply: 0.001
+      unit_of_measurement: kWh
+      device_class: energy
+
+time:
+    - platform: sntp
+      id: my_time
