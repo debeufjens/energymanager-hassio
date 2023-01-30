@@ -1,0 +1,25 @@
+alias: hvac - motion triggered
+description: ''
+trigger:
+    - type: turned_on
+      platform: device
+      device_id: e48cd5b2912a924044c5eade089af8d9
+      entity_id: binary_sensor.motion_detector
+      domain: binary_sensor
+condition: []
+action:
+    - type: turn_on
+      device_id: e48cd5b2912a924044c5eade089af8d9
+      entity_id: switch.hvac_on
+      domain: switch
+    - wait_for_trigger:
+          - type: turned_off
+            platform: device
+            device_id: e48cd5b2912a924044c5eade089af8d9
+            entity_id: binary_sensor.motion_detector
+            domain: binary_sensor
+    - type: turn_off
+      device_id: e48cd5b2912a924044c5eade089af8d9
+      entity_id: switch.hvac_on
+      domain: switch
+mode: single
