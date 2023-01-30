@@ -1,0 +1,78 @@
+title: Energymanager
+views:
+    - theme: Backend-selected
+      title: Power
+      path: power
+      icon: mdi:power-plug
+      badges: []
+      cards:
+          - type: entities
+            entities:
+                - entity: switch.relay_1
+                  icon: mdi:chef-hat
+                  name: Induction Cooker
+                - entity: switch.relay_2
+                  icon: mdi:temperature-celsius
+                  name: Clima / Water heating
+                - entity: switch.relay_3
+                  icon: mdi:connection
+                  name: Power Plugs
+                - entity: switch.relay_4
+                  icon: mdi:ceiling-light-multiple
+                  name: Lights / 12V
+          - type: entities
+            entities:
+                - entity: sensor.total_current
+                  icon: mdi:sine-wave
+                - entity: sensor.total_power
+                  icon: mdi:lightning-bolt
+          - type: entities
+            entities:
+                - entity: sensor.adc_sensor_relay1
+                  name: Induction Cooker Current
+                - entity: sensor.adc_sensor_relay2
+                  name: Clima / Water heating Current
+                - entity: sensor.adc_sensor_relay3
+                  name: Power Plugs Current
+                - entity: sensor.adc_sensor_relay4
+                  name: Lights / 12V Current
+    - theme: Backend-selected
+      path: default_view
+      icon: mdi:temperature-celsius
+      badges: []
+      cards:
+          - type: entities
+            entities:
+                - entity: switch.hvac_on
+                  name: CLIMA
+                  icon: mdi:power
+          - type: conditional
+            conditions:
+                - entity: switch.hvac_on
+                  state: 'on'
+            card:
+                type: entities
+                entities:
+                    - entity: select.ac_mode
+                      secondary_info: none
+                      icon: mdi:air-conditioner
+                      name: Mode
+                    - entity: number.temperature_slider
+                      name: Temperature
+                      icon: mdi:thermometer
+          - type: entities
+            entities:
+                - binary_sensor.motion_detector
+    - theme: Backend-selected
+      path: costs
+      icon: mdi:currency-eur
+      badges: []
+      cards:
+          - type: energy-distribution
+          - type: energy-sources-table
+          - type: energy-usage-graph
+          - type: entities
+            entities:
+                - entity: sensor.total_daily_energy
+                - entity: sensor.total_daily_energy_cost
+                  name: Total Daily Cost
