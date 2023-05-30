@@ -1,4 +1,4 @@
-# EnergyManager Installation Guide
+# EnergyManager
 
 This repository provides a complete guide for installing and setting up EnergyManager, an energy consumption monitoring and optimization system developed by Jens De Beuf as part of a research project for my bachelors thesis. EnergyManager is deployed on Home Assistant, an open-source home automation platform running on Python.
 
